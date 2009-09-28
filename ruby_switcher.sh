@@ -168,7 +168,7 @@ function use_ruby_187 {
 #
 function install_ruby_191 {
   install_ruby_from_source "1.9" "1" "243" && use_ruby_191 && 
-  install_rubygems && install_rake && popd
+  gem update --system && install_rake && popd
 }
 
 function uninstall_ruby_191 {
@@ -186,7 +186,7 @@ function use_ruby_191 {
 #
 function install_ruby_192 {
   install_ruby_from_source "1.9" "2" "review1" && use_ruby_192 && 
-  install_rubygems && install_rake && popd
+  gem update --system && install_rake && popd
 }
 
 function uninstall_ruby_192 {

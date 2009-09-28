@@ -32,8 +32,18 @@ function install_ruby_from_source {
   local url="ftp://ftp.ruby-lang.org/pub/ruby/$ruby_major/$ruby_version.tar.gz"
 
   mkdir -p /tmp && mkdir -p $RUBY_BASEDIR/$ruby_major && rm -rf $RUBY_BASEDIR/$ruby_major/$ruby_version &&
-  pushd /tmp &&
-  curl --silent -L -O $url &&
+  pushd /tmp
+
+  if [ ! -e "$ruby_version.tar.gz" ]
+  then
+    curl --silent -L -O $url
+  fi
+
+  if [ -e "$ruby_version" ]
+  then
+    rm -rf $ruby_version
+  fi
+
   tar xzf $ruby_version.tar.gz &&
   cd $ruby_version &&
   ./configure --prefix=$RUBY_BASEDIR/$ruby_major/$ruby_version --enable-shared &&
@@ -52,6 +62,7 @@ function use_ruby {
   then
     export MY_RUBY_HOME=$RUBY_BASEDIR/$ruby_major/$ruby_version
     export GEM_HOME=$RUBY_BASEDIR/$ruby_major/gems
+    export GEM_PATH=$GEM_HOME
     update_path  
   else
     echo "Ruby $ruby_major.$ruby_minor is not installed on this system."
@@ -84,7 +95,11 @@ function install_rubygems {
 }
 
 function install_rake {
-  gem install -q --no-ri --no-rdoc rake
+  local rake_count=`gem list --local | grep rake | wc -l`
+  if [ "$rake_count" -eq "0" ]
+  then
+    gem install -q --no-ri --no-rdoc rake
+  fi
 }
 
 function display_ruby_version {
